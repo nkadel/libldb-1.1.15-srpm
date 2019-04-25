@@ -1,14 +1,11 @@
 # Single python3 version in Fedora, python3_pkgversion macro not available
 %{!?python3_pkgversion:%global python3_pkgversion 3}
 
-%{!?__python2:        %global __python2 /usr/bin/python2}
-%{!?python2_sitelib:  %global python2_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-
-%if 0%{?fedora} > 0 || 0%{?rhel} > 6
 %global with_python3 1
-%else
-%global with_python3 0
+
+%global with_python2 1
+%if 0%{?fedora} > 30
+%global with_python2 0
 %endif
 
 %global talloc_version 2.1.11
@@ -17,7 +14,7 @@
 
 Name: libldb
 Version: 1.4.6
-Release: 0%{?dist}
+Release: 0.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -260,6 +257,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Thu Apr 25 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.6-0.1
+- Update python2/python3 logic to discard python2 for Fedora > 30
+
 * Wed Apr 24 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.6-0
 - Update to 1.4.6
 - Use pathfix.py and python3_pkgversion consistently for RHEL
